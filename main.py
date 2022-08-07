@@ -27,35 +27,6 @@ def follow(file, sleep_sec=1) -> Iterator[str]:
                 time.sleep(sleep_sec)
 
 
-def tail_F(file_path):
-    """works like tail -f in linux, yells every incoming message to the file."""
-    first_call = True
-    while True:
-        try:
-            with open(file_path) as input:
-                if first_call:
-                    #input.seek(0, 2)
-                    first_call = False
-                latest_data = input.read()
-                while True:
-                    if '\n' not in latest_data:
-                        latest_data += input.read()
-                        if '\n' not in latest_data:
-                            yield ''
-                            if not os.path.isfile(file_path):
-                                break
-                            continue
-                    latest_lines = latest_data.split('\n')
-                    if latest_data[-1] != '\n':
-                        latest_data = latest_lines[-1]
-                    else:
-                        latest_data = input.read()
-                    for line in latest_lines[:-1]:
-                        yield line + '\n'
-        except IOError:
-            yield ''
-
-
 def log_correct_check(timeout: int) -> bool:
     """Check if mosaic is responding with thermal images.
     timeout - acceptable time of mosaic no activity."""
